@@ -1,31 +1,33 @@
 <script setup lang="ts">
-const reasons = [
+const { t } = useI18n()
+
+const reasons = computed(() => [
   {
     icon: 'i-lucide-bar-chart-3',
-    title: 'Data-driven approach',
-    description: 'Decisions are built on campaign insights, not assumptions.'
+    title: t('why.items.data.title'),
+    description: t('why.items.data.description')
   },
   {
     icon: 'i-lucide-file-check-2',
-    title: 'Transparent reporting',
-    description: 'Clear weekly updates and real-time visibility on performance.'
+    title: t('why.items.reporting.title'),
+    description: t('why.items.reporting.description')
   },
   {
     icon: 'i-lucide-zap',
-    title: 'Fast execution',
-    description: 'Quick iteration cycles to test, learn, and scale efficiently.'
+    title: t('why.items.speed.title'),
+    description: t('why.items.speed.description')
   },
   {
     icon: 'i-lucide-rocket',
-    title: 'Startup-friendly',
-    description: 'Lean processes and practical strategy built for growing teams.'
+    title: t('why.items.startup.title'),
+    description: t('why.items.startup.description')
   },
   {
     icon: 'i-lucide-globe-2',
-    title: 'International experience',
-    description: 'Campaign execution across diverse markets and audiences.'
+    title: t('why.items.global.title'),
+    description: t('why.items.global.description')
   }
-]
+])
 </script>
 
 <template>
@@ -35,9 +37,9 @@ const reasons = [
   >
     <div class="container-section space-y-12">
       <SectionHeading
-        eyebrow="Why Miilli"
-        title="Built for teams that need outcomes, not noise"
-        description="We combine strategic clarity with practical execution, helping brands move from experiments to scalable growth channels."
+        :eyebrow="t('why.eyebrow')"
+        :title="t('why.title')"
+        :description="t('why.description')"
       />
 
       <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">

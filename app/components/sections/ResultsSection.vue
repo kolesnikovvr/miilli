@@ -1,10 +1,12 @@
 <script setup lang="ts">
-const stats = [
+const { t } = useI18n()
+
+const stats = computed(() => [
   { value: '+320%', label: 'ROAS' },
-  { value: '1M+', label: 'impressions generated' },
-  { value: '50+', label: 'campaigns launched' },
-  { value: 'Global', label: 'international clients' }
-]
+  { value: '1M+', label: t('results.stats.impressions') },
+  { value: '50+', label: t('results.stats.campaigns') },
+  { value: 'Global', label: t('results.stats.clients') }
+])
 </script>
 
 <template>
@@ -13,11 +15,11 @@ const stats = [
     class="section-space"
   >
     <div class="container-section">
-      <div class="rounded-3xl border border-blue-100 bg-gradient-to-br from-blue-50 via-white to-sky-100 px-6 py-12 sm:px-10 lg:px-14 lg:py-16">
+      <div class="rounded-3xl border border-blue-100 bg-linear-to-br from-blue-50 via-white to-sky-100 px-6 py-12 sm:px-10 lg:px-14 lg:py-16">
         <SectionHeading
-          eyebrow="Results"
-          title="Performance that compounds over time"
-          description="From paid growth to content execution, each campaign is measured against outcomes that matter."
+          :eyebrow="t('results.eyebrow')"
+          :title="t('results.title')"
+          :description="t('results.description')"
         />
 
         <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

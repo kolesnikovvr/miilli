@@ -9,6 +9,35 @@ interface ContactPayload {
   website?: string
 }
 
+type ApiLocale = 'en' | 'et'
+
+const API_MESSAGES: Record<ApiLocale, Record<string, string>> = {
+  en: {
+    tooManyRequests: 'Too many requests. Please try again in a few minutes.',
+    invalidRequest: 'Invalid request.',
+    nameTooShort: 'Name must contain at least 2 characters.',
+    invalidEmail: 'Please provide a valid email address.',
+    companyTooShort: 'Company must contain at least 2 characters.',
+    messageTooShort: 'Message must contain at least 10 characters.',
+    messageTooLong: 'Message is too long.',
+    invalidBody: 'Invalid request body.',
+    serviceNotConfigured: 'Contact service is not configured.',
+    sendFailed: 'Unable to send your message at the moment.'
+  },
+  et: {
+    tooManyRequests: 'Liiga palju päringuid. Palun proovi mõne minuti pärast uuesti.',
+    invalidRequest: 'Vigane päring.',
+    nameTooShort: 'Nimi peab sisaldama vähemalt 2 tähemärki.',
+    invalidEmail: 'Palun sisesta korrektne e-posti aadress.',
+    companyTooShort: 'Ettevõtte nimi peab sisaldama vähemalt 2 tähemärki.',
+    messageTooShort: 'Sõnum peab sisaldama vähemalt 10 tähemärki.',
+    messageTooLong: 'Sõnum on liiga pikk.',
+    invalidBody: 'Vigane päringu sisu.',
+    serviceNotConfigured: 'Kontaktivorm ei ole serveris seadistatud.',
+    sendFailed: 'Sõnumi saatmine ei õnnestunud. Palun proovi hiljem uuesti.'
+  }
+}
+
 const isValidEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
 const REQUESTS_WINDOW_MS = 10 * 60 * 1000
 const MAX_REQUESTS_PER_WINDOW = 5
@@ -16,15 +45,21 @@ const ipRequestStore = new Map<string, number[]>()
 
 const getClientIp = (event: H3Event) => getRequestIP(event, { xForwardedFor: true }) || 'unknown'
 
-const enforceRateLimit = (event: H3Event) => {
+const getLocaleFromEvent = (event: H3Event): ApiLocale => {
+  const acceptLanguage = (getHeader(event, 'accept-language') || '').toLowerCase()
+  return acceptLanguage.startsWith('et') ? 'et' : 'en'
+}
+
+const enforceRateLimit = (event: H3Event, locale: ApiLocale) => {
   const now = Date.now()
   const ip = getClientIp(event)
   const timestamps = ipRequestStore.get(ip)?.filter(timestamp => now - timestamp <= REQUESTS_WINDOW_MS) || []
+  const messages = API_MESSAGES[locale]
 
   if (timestamps.length >= MAX_REQUESTS_PER_WINDOW) {
     throw createError({
       statusCode: 429,
-      statusMessage: 'Too many requests. Please try again in a few minutes.'
+      statusMessage: messages.tooManyRequests
     })
   }
 
@@ -40,46 +75,48 @@ const sanitizePayload = (payload: Partial<ContactPayload>): ContactPayload => ({
   website: payload.website?.trim() || ''
 })
 
-const validatePayload = (payload: ContactPayload) => {
+const validatePayload = (payload: ContactPayload, locale: ApiLocale) => {
+  const messages = API_MESSAGES[locale]
+
   if (payload.website) {
     throw createError({
       statusCode: 400,
-      statusMessage: 'Invalid request.'
+      statusMessage: messages.invalidRequest
     })
   }
 
   if (!payload.name || payload.name.trim().length < 2) {
     throw createError({
       statusCode: 400,
-      statusMessage: 'Name must contain at least 2 characters.'
+      statusMessage: messages.nameTooShort
     })
   }
 
   if (!payload.email || !isValidEmail(payload.email)) {
     throw createError({
       statusCode: 400,
-      statusMessage: 'Please provide a valid email address.'
+      statusMessage: messages.invalidEmail
     })
   }
 
   if (!payload.company || payload.company.trim().length < 2) {
     throw createError({
       statusCode: 400,
-      statusMessage: 'Company must contain at least 2 characters.'
+      statusMessage: messages.companyTooShort
     })
   }
 
   if (!payload.message || payload.message.trim().length < 10) {
     throw createError({
       statusCode: 400,
-      statusMessage: 'Message must contain at least 10 characters.'
+      statusMessage: messages.messageTooShort
     })
   }
 
   if (payload.message.length > 4000) {
     throw createError({
       statusCode: 400,
-      statusMessage: 'Message is too long.'
+      statusMessage: messages.messageTooLong
     })
   }
 }
@@ -108,16 +145,18 @@ const buildEmailPayload = (payload: ContactPayload, recipientEmail: string, send
 })
 
 export default defineEventHandler(async (event) => {
-  enforceRateLimit(event)
+  const locale = getLocaleFromEvent(event)
+  const messages = API_MESSAGES[locale]
+  enforceRateLimit(event, locale)
 
   const body = await readBody<Partial<ContactPayload>>(event)
   const payload = sanitizePayload(body)
-  validatePayload(payload)
+  validatePayload(payload, locale)
 
   if (!payload.name || !payload.email || !payload.company || !payload.message) {
     throw createError({
       statusCode: 400,
-      statusMessage: 'Invalid request body.'
+      statusMessage: messages.invalidBody
     })
   }
 
@@ -129,7 +168,7 @@ export default defineEventHandler(async (event) => {
   if (!resendApiKey || !recipientEmail || !senderEmail) {
     throw createError({
       statusCode: 503,
-      statusMessage: 'Contact service is not configured.'
+      statusMessage: messages.serviceNotConfigured
     })
   }
 
@@ -145,7 +184,7 @@ export default defineEventHandler(async (event) => {
   } catch {
     throw createError({
       statusCode: 502,
-      statusMessage: 'Unable to send your message at the moment.'
+      statusMessage: messages.sendFailed
     })
   }
 

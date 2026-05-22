@@ -1,3 +1,7 @@
+<script setup lang="ts">
+const { t } = useI18n()
+</script>
+
 <template>
   <FadeInSection
     id="hero"
@@ -13,11 +17,11 @@
           <a
             href="#hero"
             class="mb-6 inline-flex items-center"
-            aria-label="Miilli.org home"
+            :aria-label="t('hero.homeAria')"
           >
             <img
               src="/Miilli.svg"
-              alt="Miilli.org logo"
+              :alt="t('hero.logoAlt')"
               width="248"
               height="auto"
               class=" w-[248px]"
@@ -25,29 +29,29 @@
           </a>
 
           <p class="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-blue-600">
-            Miilli.org Digital Marketing Agency
+            {{ t('hero.badge') }}
           </p>
 
           <h1 class="hero-title max-w-3xl text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
-            Marketing that drives growth
+            {{ t('hero.title') }}
           </h1>
 
           <p class="mt-6 max-w-2xl text-base leading-8 text-slate-600 sm:text-lg">
-            We help brands scale with performance marketing, content strategy and digital campaigns.
+            {{ t('hero.description') }}
           </p>
 
           <div class="mt-10 flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
             <UButton
               to="#contact"
               size="xl"
-              label="Book a Call"
+              :label="t('hero.bookCall')"
               color="primary"
               class="justify-center"
             />
             <UButton
               to="#contact"
               size="xl"
-              label="Get Proposal"
+              :label="t('hero.proposal')"
               color="neutral"
               variant="outline"
               class="justify-center border-slate-300"

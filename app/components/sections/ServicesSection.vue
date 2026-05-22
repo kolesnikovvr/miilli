@@ -1,31 +1,33 @@
 <script setup lang="ts">
-const services = [
+const { t, tm } = useI18n()
+
+const services = computed(() => [
   {
     icon: 'i-lucide-megaphone',
-    title: 'Performance Marketing',
-    points: ['Meta Ads', 'Google Ads', 'Lead generation', 'Conversion optimization']
+    title: t('services.items.performance.title'),
+    points: tm('services.items.performance.points') as string[]
   },
   {
     icon: 'i-lucide-instagram',
-    title: 'Social Media Management',
-    points: ['Content planning', 'Posting strategy', 'Community management']
+    title: t('services.items.social.title'),
+    points: tm('services.items.social.points') as string[]
   },
   {
     icon: 'i-lucide-compass',
-    title: 'Branding & Strategy',
-    points: ['Brand positioning', 'Marketing strategy', 'Competitor analysis']
+    title: t('services.items.brand.title'),
+    points: tm('services.items.brand.points') as string[]
   },
   {
     icon: 'i-lucide-pen-square',
-    title: 'Content Creation',
-    points: ['Ad creatives', 'Copywriting', 'Video content', 'Design assets']
+    title: t('services.items.content.title'),
+    points: tm('services.items.content.points') as string[]
   },
   {
     icon: 'i-lucide-line-chart',
-    title: 'SEO & Analytics',
-    points: ['SEO optimization', 'Reporting', 'Data analytics', 'Tracking setup']
+    title: t('services.items.seo.title'),
+    points: tm('services.items.seo.points') as string[]
   }
-]
+])
 </script>
 
 <template>
@@ -35,9 +37,9 @@ const services = [
   >
     <div class="container-section space-y-12">
       <SectionHeading
-        eyebrow="Services"
-        title="Integrated growth services for modern brands"
-        description="A focused mix of paid acquisition, brand strategy, and content execution designed to move key metrics fast."
+        :eyebrow="t('services.eyebrow')"
+        :title="t('services.title')"
+        :description="t('services.description')"
       />
 
       <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">

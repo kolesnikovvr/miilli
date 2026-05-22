@@ -14,6 +14,8 @@ export interface ContactFormErrors {
 }
 
 export const useContactForm = () => {
+  const { t } = useI18n()
+
   const form = reactive<ContactFormState>({
     name: '',
     email: '',
@@ -33,10 +35,10 @@ export const useContactForm = () => {
   }
 
   const validate = () => {
-    errors.name = form.name.trim().length >= 2 ? '' : 'Please enter your name.'
-    errors.email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email) ? '' : 'Please enter a valid email.'
-    errors.company = form.company.trim().length >= 2 ? '' : 'Please enter your company.'
-    errors.message = form.message.trim().length >= 10 ? '' : 'Message should be at least 10 characters.'
+    errors.name = form.name.trim().length >= 2 ? '' : t('contact.validation.name')
+    errors.email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email) ? '' : t('contact.validation.email')
+    errors.company = form.company.trim().length >= 2 ? '' : t('contact.validation.company')
+    errors.message = form.message.trim().length >= 10 ? '' : t('contact.validation.message')
 
     return !errors.name && !errors.email && !errors.company && !errors.message
   }
@@ -75,7 +77,7 @@ export const useContactForm = () => {
       return true
     } catch (error) {
       const errorWithData = error as { data?: { statusMessage?: string }, message?: string }
-      submitError.value = errorWithData?.data?.statusMessage || errorWithData?.message || 'Unable to submit your request right now.'
+      submitError.value = errorWithData?.data?.statusMessage || errorWithData?.message || t('contact.errors.unavailable')
       return false
     } finally {
       isSubmitting.value = false

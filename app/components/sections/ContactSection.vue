@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const config = useRuntimeConfig()
-const contactEmail = computed(() => config.public.contactEmail || 'hello@miilli.org')
-const linkedinUrl = computed(() => config.public.linkedinUrl || 'https://www.linkedin.com/company/miilli')
+const { t } = useI18n()
+const contactEmail = computed(() => config.public.contactEmail || 'office@miili.org')
 const formFieldUi = {
   label: 'text-slate-600'
 }
@@ -34,9 +34,9 @@ watch([() => form.name, () => form.email, () => form.company, () => form.message
       <div class="grid gap-10 rounded-3xl border border-slate-200/80 bg-white/90 p-6 shadow-[0_20px_60px_-35px_rgba(15,23,42,0.5)] backdrop-blur-sm sm:p-8 lg:grid-cols-[0.95fr_1.05fr] lg:p-10">
         <div>
           <SectionHeading
-            eyebrow="Contact"
-            title="Start your next growth sprint with Miilli"
-            description="Share your goals and current challenges. We will reply with a tailored growth plan and channel recommendations."
+            :eyebrow="t('contact.eyebrow')"
+            :title="t('contact.title')"
+            :description="t('contact.description')"
           />
           <div class="mt-8 space-y-3 text-sm text-slate-600">
             <p class="flex items-center gap-2">
@@ -49,20 +49,6 @@ watch([() => form.name, () => form.email, () => form.company, () => form.message
                 class="transition-colors duration-300 hover:text-blue-600"
               >
                 {{ contactEmail }}
-              </a>
-            </p>
-            <p class="flex items-center gap-2">
-              <UIcon
-                name="i-lucide-linkedin"
-                class="h-4 w-4 text-blue-600"
-              />
-              <a
-                :href="linkedinUrl"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="transition-colors duration-300 hover:text-blue-600"
-              >
-                LinkedIn
               </a>
             </p>
           </div>
@@ -84,14 +70,14 @@ watch([() => form.name, () => form.email, () => form.company, () => form.message
           >
 
           <UFormField
-            label="Name"
+            :label="t('contact.form.name')"
             name="name"
             :error="errors.name"
             :ui="formFieldUi"
           >
             <UInput
               v-model="form.name"
-              placeholder="Your full name"
+              :placeholder="t('contact.form.namePlaceholder')"
               autocomplete="name"
               size="xl"
               class="w-full"
@@ -101,7 +87,7 @@ watch([() => form.name, () => form.email, () => form.company, () => form.message
           </UFormField>
 
           <UFormField
-            label="Email"
+            :label="t('contact.form.email')"
             name="email"
             :error="errors.email"
             :ui="formFieldUi"
@@ -109,7 +95,7 @@ watch([() => form.name, () => form.email, () => form.company, () => form.message
             <UInput
               v-model="form.email"
               type="email"
-              placeholder="you@company.com"
+              :placeholder="t('contact.form.emailPlaceholder')"
               autocomplete="email"
               size="xl"
               class="w-full"
@@ -119,14 +105,14 @@ watch([() => form.name, () => form.email, () => form.company, () => form.message
           </UFormField>
 
           <UFormField
-            label="Company"
+            :label="t('contact.form.company')"
             name="company"
             :error="errors.company"
             :ui="formFieldUi"
           >
             <UInput
               v-model="form.company"
-              placeholder="Company name"
+              :placeholder="t('contact.form.companyPlaceholder')"
               autocomplete="organization"
               size="xl"
               class="w-full"
@@ -136,14 +122,14 @@ watch([() => form.name, () => form.email, () => form.company, () => form.message
           </UFormField>
 
           <UFormField
-            label="Message"
+            :label="t('contact.form.message')"
             name="message"
             :error="errors.message"
             :ui="formFieldUi"
           >
             <UTextarea
               v-model="form.message"
-              placeholder="Tell us about your business goals and current channels"
+              :placeholder="t('contact.form.messagePlaceholder')"
               class="w-full"
               :rows="5"
               required
@@ -154,7 +140,7 @@ watch([() => form.name, () => form.email, () => form.company, () => form.message
           <div class="space-y-3 pt-2">
             <UButton
               type="submit"
-              label="Send Message"
+              :label="t('contact.form.send')"
               size="xl"
               color="primary"
               class="w-full justify-center sm:w-auto"
@@ -165,7 +151,7 @@ watch([() => form.name, () => form.email, () => form.company, () => form.message
               v-if="isSuccess"
               class="rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700"
             >
-              Your message has been sent. We&rsquo;ll get back to you soon.
+              {{ t('contact.success') }}
             </p>
 
             <p

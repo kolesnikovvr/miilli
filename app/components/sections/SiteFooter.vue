@@ -1,13 +1,13 @@
 <script setup lang="ts">
 const config = useRuntimeConfig()
-const contactEmail = computed(() => config.public.contactEmail || 'hello@miilli.org')
-const linkedinUrl = computed(() => config.public.linkedinUrl || 'https://www.linkedin.com/company/miilli')
+const { t } = useI18n()
+const contactEmail = computed(() => config.public.contactEmail || 'office@miili.org')
 </script>
 
 <template>
   <footer class="pb-8 pt-4">
     <div class="container-section">
-      <div class="flex flex-col gap-4 border-t border-slate-200 pt-6 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between">
+      <div class="flex flex-col gap-4 border-t border-slate-200 pt-6 text-sm text-slate-500">
         <p class="flex flex-wrap items-center gap-x-2 gap-y-1">
           <span>Miilli.org</span>
           <span aria-hidden="true">•</span>
@@ -17,18 +17,12 @@ const linkedinUrl = computed(() => config.public.linkedinUrl || 'https://www.lin
           >
             {{ contactEmail }}
           </a>
-          <span aria-hidden="true">•</span>
-          <a
-            :href="linkedinUrl"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="transition-colors duration-300 hover:text-blue-600"
-          >
-            LinkedIn
-          </a>
+        </p>
+        <p class="text-slate-500">
+          {{ t('footer.registeredOffice') }}
         </p>
         <p>
-          © {{ new Date().getFullYear() }} Miilli.org. All rights reserved.
+          © {{ new Date().getFullYear() }} Miilli.org. {{ t('footer.rights') }}
         </p>
       </div>
     </div>

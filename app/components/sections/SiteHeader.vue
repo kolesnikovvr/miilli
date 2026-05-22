@@ -1,10 +1,17 @@
 <script setup lang="ts">
-const navItems = [
-  { label: 'Services', to: '#services' },
-  { label: 'Why Miilli', to: '#why-miilli' },
-  { label: 'Results', to: '#results' },
-  { label: 'Contact', to: '#contact' }
-]
+const { t, locale, setLocale } = useI18n()
+
+const navItems = computed(() => [
+  { label: t('header.nav.services'), to: '#services' },
+  { label: t('header.nav.why'), to: '#why-miilli' },
+  { label: t('header.nav.results'), to: '#results' },
+  { label: t('header.nav.contact'), to: '#contact' }
+])
+
+const languageOptions = [
+  { code: 'en', label: 'EN' },
+  { code: 'et', label: 'ET' }
+] as const
 </script>
 
 <template>
@@ -14,11 +21,11 @@ const navItems = [
         <a
           href="#hero"
           class="inline-flex items-center"
-          aria-label="Miilli.org home"
+          :aria-label="t('header.homeAria')"
         >
           <img
             src="/Miilli.svg"
-            alt="Miilli.org logo"
+            :alt="t('hero.logoAlt')"
             width="124"
             height="32"
             class="h-8 w-[124px]"
@@ -27,7 +34,7 @@ const navItems = [
 
         <nav
           class="hidden items-center gap-6 md:flex"
-          aria-label="Main navigation"
+          :aria-label="t('header.mainNavAria')"
         >
           <a
             v-for="item in navItems"
@@ -39,13 +46,30 @@ const navItems = [
           </a>
         </nav>
 
-        <UButton
-          to="#contact"
-          label="Book a Call"
-          size="sm"
-          color="primary"
-          class="hidden sm:inline-flex"
-        />
+        <div class="flex items-center gap-2">
+          <div
+            class="flex items-center gap-1 rounded-full border border-slate-200 bg-white/90 p-1"
+            :aria-label="t('header.switchLanguageAria')"
+          >
+            <UButton
+              v-for="option in languageOptions"
+              :key="option.code"
+              :label="option.label"
+              size="xs"
+              color="neutral"
+              :variant="locale === option.code ? 'solid' : 'ghost'"
+              class="min-w-10 cursor-pointer justify-center"
+              @click="setLocale(option.code)"
+            />
+          </div>
+          <UButton
+            to="#contact"
+            :label="t('header.cta')"
+            size="sm"
+            color="primary"
+            class="hidden sm:inline-flex"
+          />
+        </div>
       </div>
     </div>
   </header>

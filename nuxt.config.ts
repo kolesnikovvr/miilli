@@ -3,6 +3,7 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/eslint',
     '@nuxt/ui',
+    '@nuxtjs/i18n',
     '@nuxtjs/sitemap'
   ],
 
@@ -25,8 +26,7 @@ export default defineNuxtConfig({
     contactSenderEmail: '',
     public: {
       siteUrl: 'https://miilli.org',
-      contactEmail: 'hello@miilli.org',
-      linkedinUrl: 'https://www.linkedin.com/company/miilli'
+      contactEmail: 'office@miili.org'
     }
   },
 
@@ -43,5 +43,21 @@ export default defineNuxtConfig({
         braceStyle: '1tbs'
       }
     }
+  },
+
+  i18n: {
+    strategy: 'no_prefix',
+    defaultLocale: 'en',
+    locales: [
+      { code: 'en', name: 'English' },
+      { code: 'et', name: 'Eesti' }
+    ],
+    detectBrowserLanguage: {
+      useCookie: true,
+      cookieKey: 'miilli_i18n',
+      redirectOn: 'root',
+      fallbackLocale: 'en'
+    },
+    vueI18n: './i18n.config.ts'
   }
 })
