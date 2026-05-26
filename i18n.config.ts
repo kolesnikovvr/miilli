@@ -146,6 +146,10 @@ export default defineI18nConfig(() => ({
           send: 'Send Message'
         },
         success: 'Your message has been sent. We\'ll get back to you soon.',
+        notifications: {
+          successTitle: 'Message sent',
+          errorTitle: 'Message not sent'
+        },
         validation: {
           name: 'Please enter your name.',
           email: 'Please enter a valid email.',
@@ -314,6 +318,10 @@ export default defineI18nConfig(() => ({
           send: 'Saada sõnum'
         },
         success: 'Sinu sõnum on saadetud. Võtame peagi ühendust.',
+        notifications: {
+          successTitle: 'Sõnum saadetud',
+          errorTitle: 'Sõnumit ei saadetud'
+        },
         validation: {
           name: 'Palun sisesta oma nimi.',
           email: 'Palun sisesta korrektne e-post.',

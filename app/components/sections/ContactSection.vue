@@ -1,10 +1,12 @@
 <script setup lang="ts">
 const config = useRuntimeConfig()
 const { t } = useI18n()
+const toast = useToast()
 const contactEmail = computed(() => config.public.contactEmail || 'office@miilli.org')
 const formFieldUi = {
   label: 'text-slate-600'
 }
+const hasFailedSubmit = ref(false)
 
 const {
   form,
@@ -16,12 +18,37 @@ const {
   submit
 } = useContactForm()
 
+const firstValidationError = computed(() => errors.name || errors.email || errors.company || errors.message || '')
+
 const onSubmit = async () => {
-  await submit()
+  const isSubmitted = await submit()
+  hasFailedSubmit.value = !isSubmitted
+
+  if (isSubmitted) {
+    toast.add({
+      title: t('contact.notifications.successTitle'),
+      description: t('contact.success'),
+      color: 'success',
+      icon: 'i-lucide-circle-check'
+    })
+    return
+  }
+
+  const errorMessage = submitError.value || firstValidationError.value
+
+  if (errorMessage) {
+    toast.add({
+      title: t('contact.notifications.errorTitle'),
+      description: errorMessage,
+      color: 'error',
+      icon: 'i-lucide-circle-alert'
+    })
+  }
 }
 
 watch([() => form.name, () => form.email, () => form.company, () => form.message], () => {
   clearStatus()
+  hasFailedSubmit.value = false
 })
 </script>
 
@@ -72,7 +99,7 @@ watch([() => form.name, () => form.email, () => form.company, () => form.message
           <UFormField
             :label="t('contact.form.name')"
             name="name"
-            :error="errors.name"
+            :error="hasFailedSubmit ? errors.name : ''"
             :ui="formFieldUi"
           >
             <UInput
@@ -89,7 +116,7 @@ watch([() => form.name, () => form.email, () => form.company, () => form.message
           <UFormField
             :label="t('contact.form.email')"
             name="email"
-            :error="errors.email"
+            :error="hasFailedSubmit ? errors.email : ''"
             :ui="formFieldUi"
           >
             <UInput
@@ -107,7 +134,7 @@ watch([() => form.name, () => form.email, () => form.company, () => form.message
           <UFormField
             :label="t('contact.form.company')"
             name="company"
-            :error="errors.company"
+            :error="hasFailedSubmit ? errors.company : ''"
             :ui="formFieldUi"
           >
             <UInput
@@ -124,7 +151,7 @@ watch([() => form.name, () => form.email, () => form.company, () => form.message
           <UFormField
             :label="t('contact.form.message')"
             name="message"
-            :error="errors.message"
+            :error="hasFailedSubmit ? errors.message : ''"
             :ui="formFieldUi"
           >
             <UTextarea
@@ -147,19 +174,11 @@ watch([() => form.name, () => form.email, () => form.company, () => form.message
               :loading="isSubmitting"
             />
 
-            <p
-              v-if="isSuccess"
-              class="rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700"
-            >
-              {{ t('contact.success') }}
-            </p>
-
-            <p
-              v-if="submitError"
-              class="rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-700"
-            >
-              {{ submitError }}
-            </p>
+            <span
+              v-if="isSuccess || submitError"
+              class="sr-only"
+              aria-live="polite"
+            />
           </div>
         </form>
       </div>
