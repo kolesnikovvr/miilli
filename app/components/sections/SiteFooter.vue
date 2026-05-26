@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const config = useRuntimeConfig()
 const { t } = useI18n()
-const contactEmail = computed(() => config.public.contactEmail || 'office@miili.org')
+const contactEmail = computed(() => config.public.contactEmail || 'office@miilli.org')
 </script>
 
 <template>

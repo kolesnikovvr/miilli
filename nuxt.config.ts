@@ -26,7 +26,7 @@ export default defineNuxtConfig({
     contactSenderEmail: '',
     public: {
       siteUrl: 'https://miilli.org',
-      contactEmail: 'office@miili.org'
+      contactEmail: 'office@miilli.org'
     }
   },
 
